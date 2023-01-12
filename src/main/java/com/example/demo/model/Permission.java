@@ -2,7 +2,9 @@ package com.example.demo.model;
 
 import com.example.demo.model.enums.PermissionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
+
+import javax.persistence.*;
+
 import lombok.*;
 
 import java.time.LocalDate;

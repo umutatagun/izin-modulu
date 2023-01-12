@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.CreatePermissionRequestDto;
-import com.example.demo.dto.PermissionDto;
+import com.example.demo.model.dto.CreatePermissionRequestDto;
+import com.example.demo.model.dto.PermissionDto;
 
 import java.util.List;
 
@@ -12,5 +12,4 @@ public interface PermissionService {
     void deletePermission(Long id);
     PermissionDto approvePermissionRequest(Long id);
     PermissionDto rejectPermissionRequest(Long id);
-    long test(CreatePermissionRequestDto createPermissionRequestDto);
 }

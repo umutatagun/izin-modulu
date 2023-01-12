@@ -8,8 +8,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.Date;
 
 @SpringBootApplication
-@EnableWebMvc
 @EnableScheduling
+@EnableWebMvc
 public class CaseApplication {
 
 	public static void main(String[] args) {

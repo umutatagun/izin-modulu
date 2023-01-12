@@ -1,10 +1,10 @@
 package com.example.demo.exception;
 
-import jakarta.validation.ConstraintViolationException;
-import org.springframework.cglib.core.Local;
+import org.apache.coyote.Response;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -21,9 +21,29 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         this.messageSource = messageSource;
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity constraintViolationException(Locale locale) {
-        String errorMsg = messageSource.getMessage("error.message", null, locale);
+    /*
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity exception(Locale locale) {
+        String errorMsg = messageSource.getMessage("error.exception", null, locale);
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put("errorMessage", errorMsg);
+        return new ResponseEntity(errors, new HttpHeaders(), BAD_REQUEST);
+    }
+     */
+
+    @ExceptionHandler(LoginUsernameAlreadyExistsException.class)
+    public ResponseEntity usernameAlreadyExistsException(Locale locale) {
+        String errorMsg = messageSource.getMessage("error.employee.username.already.exists", null, locale);
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put("errorMessage", errorMsg);
+        return new ResponseEntity(errors, new HttpHeaders(), BAD_REQUEST);
+    }
+
+    @ExceptionHandler(LoginInformationRequiredException.class)
+    public ResponseEntity loginInformationRequiredException(Locale locale) {
+        String errorMsg = messageSource.getMessage("error.employee.login.information.required", null, locale);
 
         Map<String, String> errors = new HashMap<>();
         errors.put("errorMessage", errorMsg);
@@ -75,5 +95,22 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity(errors, new HttpHeaders(), BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity invalidTokenException(Locale locale) {
+        String errorMsg = messageSource.getMessage("error.jwt.invalid.token", null, locale);
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put("errorMessage", errorMsg);
+        return new ResponseEntity(errors, new HttpHeaders(), BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseEntity internalAuthenticationServiceException(Locale locale) {
+        String errorMsg = messageSource.getMessage("error.jwt.invalid.auth", null, locale);
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put("errorMessage", errorMsg);
+        return new ResponseEntity(errors, new HttpHeaders(), BAD_REQUEST);
+    }
 
 }

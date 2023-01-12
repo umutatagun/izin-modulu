@@ -1,7 +1,8 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.CreatePermissionRequestDto;
-import com.example.demo.dto.PermissionDto;
+import com.example.demo.model.converter.PermissionConverter;
+import com.example.demo.model.dto.CreatePermissionRequestDto;
+import com.example.demo.model.dto.PermissionDto;
 import com.example.demo.exception.EmployeeNotFoundWithEmailException;
 import com.example.demo.exception.NotEnoughPermissionException;
 import com.example.demo.exception.PermissionNotFoundException;
@@ -26,27 +27,27 @@ import java.util.stream.Collectors;
 @Service
 public class PermissionServiceImpl implements PermissionService {
     private final PermissionRepository permissionRepository;
-    private final ModelMapper modelMapper;
+    private final PermissionConverter converter;
     private final EmployeeRepository employeeRepository;
 
-    public PermissionServiceImpl(PermissionRepository permissionRepository, ModelMapper modelMapper, EmployeeRepository employeeRepository) {
+    public PermissionServiceImpl(PermissionRepository permissionRepository, PermissionConverter converter, EmployeeRepository employeeRepository) {
         this.permissionRepository = permissionRepository;
-        this.modelMapper = modelMapper;
+        this.converter = converter;
         this.employeeRepository = employeeRepository;
     }
 
     public List<PermissionDto> getAllPermissions(){
         return permissionRepository.findAll()
                 .stream()
-                .map(this::convert)
+                .map(item -> converter.convert(item))
                 .collect(Collectors.toList());
     }
 
     public PermissionDto createPermissionRequest(CreatePermissionRequestDto createPermissionRequestDto) {
-        Permission permission = modelMapper.map(createPermissionRequestDto, Permission.class);
+        Permission permission = converter.convert(createPermissionRequestDto);
 
         Optional<Employee> employee = employeeRepository.findByEmail(createPermissionRequestDto.getEmployeeMail());
-        if(employee.isEmpty()){
+        if(!employee.isPresent()){
             throw new EmployeeNotFoundWithEmailException(null);
         }
 
@@ -71,11 +72,7 @@ public class PermissionServiceImpl implements PermissionService {
         employee.get().setHoliday(holiday);
         permission.setEmployee(employee.get());
 
-        return convert(permissionRepository.save(permission));
-    }
-
-    public long test(CreatePermissionRequestDto createPermissionRequestDto) {
-        return calculateWeekdays(createPermissionRequestDto.getFirstDay(), createPermissionRequestDto.getUntilDay());
+        return converter.convert(permissionRepository.save(permission));
     }
 
     public PermissionDto updatePermission(Long id,PermissionDto from) {
@@ -86,7 +83,7 @@ public class PermissionServiceImpl implements PermissionService {
         permission.setFirstDay(from.getFirstDay());
         permission.setUntilDay(from.getUntilDay());
 
-        return convert(permissionRepository.save(permission));
+        return converter.convert(permissionRepository.save(permission));
     }
 
     public void deletePermission(Long id) {
@@ -98,14 +95,14 @@ public class PermissionServiceImpl implements PermissionService {
         Permission permission = findById(id);
         permission.setPermissionStatus(PermissionStatus.ONAYLANDI);
 
-        return convert(permissionRepository.save(permission));
+        return converter.convert(permissionRepository.save(permission));
     }
 
     public PermissionDto rejectPermissionRequest(Long id) {
         Permission permission = findById(id);
         permission.setPermissionStatus(PermissionStatus.REDDEDILDI);
 
-        return convert(permissionRepository.save(permission));
+        return converter.convert(permissionRepository.save(permission));
     }
 
     private Permission findById(Long id) {
@@ -115,14 +112,6 @@ public class PermissionServiceImpl implements PermissionService {
 
     private boolean isExists(Long id) {
         return (permissionRepository.findById(id).isPresent()) ? true : false;
-    }
-
-    private PermissionDto convert(Permission from) {
-        return modelMapper.map(from, PermissionDto.class);
-    }
-
-    private Permission convert(PermissionDto from) {
-        return modelMapper.map(from, Permission.class);
     }
 
     private long calculateWeekdays(final LocalDate start, final LocalDate end) {

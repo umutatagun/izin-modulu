@@ -1,6 +1,7 @@
-package com.example.demo.dto;
+package com.example.demo.model.dto;
 
 import com.example.demo.model.Holiday;
+import com.example.demo.model.Login;
 import com.example.demo.model.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -14,15 +15,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EmployeeDto {
+public class CreateEmployeeRequestDto {
     private String firstName;
     private String lastName;
     private String email;
+    private String tckn;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
     private Boolean isManager;
-    private Holiday holiday;
+    private Holiday holiday = new Holiday();
     private Gender gender;
+    private Login login;
 }

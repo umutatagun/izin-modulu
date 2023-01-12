@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.CreateEmployeeRequestDto;
-import com.example.demo.dto.EmployeeDto;
+import com.example.demo.model.dto.CreateEmployeeRequestDto;
+import com.example.demo.model.dto.EmployeeDto;
 import com.example.demo.service.EmployeeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +22,8 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDto>> getAllEmployees(
-            @RequestParam(required = false) Optional<String> email,
-            @RequestParam(required = false) Optional<String> lastName
-    ) {
-        return new ResponseEntity(employeeService.getAllEmployees(email, lastName), OK);
+    public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
+        return new ResponseEntity(employeeService.getAllEmployees(), OK);
     }
 
     @GetMapping("/{id}")

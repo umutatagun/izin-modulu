@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.model.dto;
 
 import com.example.demo.model.Holiday;
 import com.example.demo.model.enums.Gender;
@@ -13,16 +13,17 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateEmployeeRequestDto {
+@Builder
+public class EmployeeDto {
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
-    private String tckn;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate startDate = LocalDate.now();
     private Boolean isManager;
-    private Holiday holiday = new Holiday();
+    private Holiday holiday;
     private Gender gender;
 }

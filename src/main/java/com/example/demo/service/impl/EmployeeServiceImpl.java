@@ -1,66 +1,62 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.CreateEmployeeRequestDto;
-import com.example.demo.dto.EmployeeDto;
+import com.example.demo.exception.LoginInformationRequiredException;
+import com.example.demo.exception.LoginUsernameAlreadyExistsException;
+import com.example.demo.model.converter.EmployeeConverter;
+import com.example.demo.model.dto.CreateEmployeeRequestDto;
+import com.example.demo.model.dto.EmployeeDto;
 import com.example.demo.exception.EmployeeAlreadyExistsException;
 import com.example.demo.exception.EmployeeNotFoundException;
 import com.example.demo.model.Employee;
 import com.example.demo.model.Holiday;
-import com.example.demo.model.criteria.GenericSpecification;
-import com.example.demo.model.criteria.SearchCriteria;
-import com.example.demo.model.criteria.SearchOperation;
 import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.LoginRepository;
 import com.example.demo.service.EmployeeService;
-import jakarta.validation.ConstraintViolationException;
-import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
-    private final ModelMapper modelMapper;
+    private final EmployeeConverter converter;
+    private final BCryptPasswordEncoder encoder;
+    private final LoginRepository loginRepository;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, ModelMapper modelMapper) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeConverter converter, BCryptPasswordEncoder encoder, LoginRepository loginRepository) {
         this.employeeRepository = employeeRepository;
-        this.modelMapper = modelMapper;
+        this.converter = converter;
+        this.encoder = encoder;
+        this.loginRepository = loginRepository;
     }
 
-    public List<EmployeeDto> getAllEmployees(
-            Optional<String> email,
-            Optional<String> lastName
-    ) {
-        GenericSpecification<Employee> genericSpecification = new GenericSpecification();
-
-        if(email.isPresent()) {
-            genericSpecification.add(new SearchCriteria("email", email.get(), SearchOperation.EQUAL));
-        }
-        if(lastName.isPresent()) {
-            genericSpecification.add(new SearchCriteria("lastName", lastName.get(), SearchOperation.EQUAL));
-        }
-
-        return employeeRepository.findAll(genericSpecification)
-                .stream()
-                .map(this::convert)
-                .collect(Collectors.toList());
+    public List<EmployeeDto> getAllEmployees() {
+        return converter.convert(employeeRepository.findAll());
     }
 
 
     public EmployeeDto getEmployeeById(Long id) {
         Employee employee = findById(id);
-        return convert(employee);
+        return converter.convert(employee);
     }
 
     public EmployeeDto createEmployee(CreateEmployeeRequestDto employeeDto) {
         if(isExists(employeeDto.getEmail())) {
             throw new EmployeeAlreadyExistsException(null);
         }
-        Employee employee = convert(employeeDto);
+        if(Objects.isNull(employeeDto.getLogin())) {
+            throw new LoginInformationRequiredException(null);
+        }
+        if(loginRepository.findByUsername(employeeDto.getLogin().getUsername()).isPresent()) {
+            throw new LoginUsernameAlreadyExistsException(null);
+        }
+        employeeDto.getLogin().setPassword(encoder.encode(employeeDto.getLogin().getPassword()));
+        Employee employee = converter.convert(employeeDto);
 
         Period diff = Period.between(employeeDto.getStartDate(), LocalDate.now());
         if(diff.getYears() == 0) {
@@ -69,7 +65,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setHoliday(holiday);
         }
 
-        return convert(employeeRepository.save(employee));
+        return converter.convert(employeeRepository.save(employee));
     }
 
     public EmployeeDto updateEmployee(Long id, EmployeeDto from) {
@@ -85,7 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setLastModifiedDate(LocalDate.now());
         employee.setLastModifiedBy("Admin");
 
-        return convert(employeeRepository.save(employee));
+        return converter.convert(employeeRepository.save(employee));
     }
 
     public void deleteEmployee(Long id) {
@@ -102,18 +98,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private Employee findById(Long id) {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(null));
-    }
-
-    private EmployeeDto convert(Employee from) {
-        return modelMapper.map(from, EmployeeDto.class);
-    }
-
-    private Employee convert(EmployeeDto from) {
-        return modelMapper.map(from, Employee.class);
-    }
-
-    private Employee convert(CreateEmployeeRequestDto from) {
-        return modelMapper.map(from, Employee.class);
     }
 
 }

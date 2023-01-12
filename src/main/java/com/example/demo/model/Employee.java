@@ -2,9 +2,9 @@ package com.example.demo.model;
 
 import com.example.demo.model.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+
+import javax.persistence.*;
+
 import lombok.*;
 
 import java.time.LocalDate;
@@ -43,4 +43,8 @@ public class Employee extends BaseEntity{
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private List<Permission> permissions = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "lg_id", referencedColumnName = "id")
+    private Login login;
 }

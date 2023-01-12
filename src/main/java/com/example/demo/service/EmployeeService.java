@@ -1,13 +1,13 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.CreateEmployeeRequestDto;
-import com.example.demo.dto.EmployeeDto;
+import com.example.demo.model.dto.CreateEmployeeRequestDto;
+import com.example.demo.model.dto.EmployeeDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeService {
-    List<EmployeeDto> getAllEmployees(Optional<String> email, Optional<String> lastName);
+    List<EmployeeDto> getAllEmployees();
     EmployeeDto getEmployeeById(Long id);
     EmployeeDto createEmployee(CreateEmployeeRequestDto employeeDto);
     void deleteEmployee(Long id);
