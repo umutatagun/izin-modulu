@@ -15,7 +15,7 @@ docker-compose up -d
 
 ### Local MySQL ile bağlanmak için
 
-* MySql user ve password bilgilerini .env dosyası içersinde belirtmelisiniz.
+* MySql kullanıcı adı, şifre ve veritabanı bilgilerini .env dosyası içersinde belirtmelisiniz.
 
 
 ### Projeyi Ayağa Kaldırmak İçin
@@ -52,7 +52,7 @@ mvn spring-boot:run
 * İzinler, çalışanların tecrübelerine göre verilmiştir.
 * Her yıl 30 Aralık'ta izin süreleri güncellenir. (Cron job olarak SchedulePermissions.class'a eklendi)
 * Manuel test yapılabilmesi için, Postman Test/RefleshPermissions servisi tetiklenmelidir.
-* Servis tetiklendiği zaman her yıl 30 aralıkta çalışacak cron job bir kerelik çalıştırılır ve çalışanlara izinleri verilir.
+* Servis tetiklendiği zaman her yıl 30 aralıkta çalışacak cron job bir kere çalıştırılır ve çalışanlara izin hakları eklenir.
 
  
 ### Dil ayarı için
