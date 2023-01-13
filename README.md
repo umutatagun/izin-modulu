@@ -3,7 +3,7 @@
 Swagger: http://localhost:8080/swagger-ui/index.html
 ##Projenin ve gerekli bağımlılıkların indirilmesi
 ```
-* git clone https://github.com/umutatagun/spring-izin-servisi.git
+* git clone https://github.com/umutatagun/izin-modulu.git
 * cd izin-modulu
 * mvn install
 ```
