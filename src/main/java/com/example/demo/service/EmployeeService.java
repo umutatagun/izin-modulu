@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeService {
-    List<EmployeeDto> getAllEmployees();
+    List<EmployeeDto> getAllEmployees(Optional<String> email, Optional<String> lastName);
     EmployeeDto getEmployeeById(Long id);
     EmployeeDto createEmployee(CreateEmployeeRequestDto employeeDto);
     void deleteEmployee(Long id);

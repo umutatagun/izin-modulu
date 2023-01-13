@@ -1,6 +1,5 @@
 package com.example.demo.exception;
 
-import org.apache.coyote.Response;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         this.messageSource = messageSource;
     }
 
-    /*
     @ExceptionHandler(Exception.class)
     public ResponseEntity exception(Locale locale) {
         String errorMsg = messageSource.getMessage("error.exception", null, locale);
@@ -30,7 +28,6 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         errors.put("errorMessage", errorMsg);
         return new ResponseEntity(errors, new HttpHeaders(), BAD_REQUEST);
     }
-     */
 
     @ExceptionHandler(LoginUsernameAlreadyExistsException.class)
     public ResponseEntity usernameAlreadyExistsException(Locale locale) {

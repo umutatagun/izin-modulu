@@ -21,3 +21,6 @@ jwt:
   KEY: yapikredi
   ISSUER: umutatagun
   EXPIRES_ACCESS_TOKEN_MINUTE: 15
+
+server:
+  port: 8080

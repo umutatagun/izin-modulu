@@ -13,7 +13,6 @@ import com.example.demo.model.enums.PermissionStatus;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.PermissionRepository;
 import com.example.demo.service.PermissionService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -54,9 +53,7 @@ public class PermissionServiceImpl implements PermissionService {
         int permissionDays = (int) calculateWeekdays(createPermissionRequestDto.getFirstDay(), createPermissionRequestDto.getUntilDay());
         Holiday holiday = employee.get().getHoliday();
 
-        Period workingYears = Period.between(employee.get().getStartDate(), LocalDate.now());
-
-        if(workingYears.getYears() == 0) {
+        if(isEmployeeNew(employee.get())) {
             if(permissionDays > holiday.getBeginnerHoliday()) {
                 throw new NotEnoughPermissionException(null);
             }
@@ -102,16 +99,27 @@ public class PermissionServiceImpl implements PermissionService {
         Permission permission = findById(id);
         permission.setPermissionStatus(PermissionStatus.REDDEDILDI);
 
+        Employee employee = employeeRepository.findByEmail(permission.getEmployeeMail()).get();
+        long rejectDayCount = calculateWeekdays(permission.getFirstDay(), permission.getUntilDay());
+
+        if(isEmployeeNew(employee)) {
+            employee.getHoliday().setBeginnerHoliday(
+                    (int) (employee.getHoliday().getBeginnerHoliday() + rejectDayCount)
+            );
+        }
+        else {
+            employee.getHoliday().setHolidayCount(
+                    (int) (employee.getHoliday().getHolidayCount() + rejectDayCount)
+            );
+        }
+
+        employeeRepository.save(employee);
         return converter.convert(permissionRepository.save(permission));
     }
 
     private Permission findById(Long id) {
         return permissionRepository.findById(id)
                 .orElseThrow(() -> new PermissionNotFoundException(null));
-    }
-
-    private boolean isExists(Long id) {
-        return (permissionRepository.findById(id).isPresent()) ? true : false;
     }
 
     private long calculateWeekdays(final LocalDate start, final LocalDate end) {
@@ -122,6 +130,10 @@ public class PermissionServiceImpl implements PermissionService {
         long daysWithoutWeekends = days - 2 * ((days + startW.getValue())/7);
 
         return daysWithoutWeekends + (startW == DayOfWeek.SUNDAY ? 1 : 0) + (endW == DayOfWeek.SUNDAY ? 1 : 0);
+    }
+
+    private boolean isEmployeeNew(Employee employee) {
+        return (Period.between(employee.getStartDate(), LocalDate.now()).getYears() == 0 ? true : false);
     }
 
 }

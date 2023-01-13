@@ -3,6 +3,9 @@ package com.example.demo.service.impl;
 import com.example.demo.exception.LoginInformationRequiredException;
 import com.example.demo.exception.LoginUsernameAlreadyExistsException;
 import com.example.demo.model.converter.EmployeeConverter;
+import com.example.demo.model.criteria.GenericSpecification;
+import com.example.demo.model.criteria.SearchCriteria;
+import com.example.demo.model.criteria.SearchOperation;
 import com.example.demo.model.dto.CreateEmployeeRequestDto;
 import com.example.demo.model.dto.EmployeeDto;
 import com.example.demo.exception.EmployeeAlreadyExistsException;
@@ -35,8 +38,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.loginRepository = loginRepository;
     }
 
-    public List<EmployeeDto> getAllEmployees() {
-        return converter.convert(employeeRepository.findAll());
+    public List<EmployeeDto> getAllEmployees(
+            Optional<String> email,
+            Optional<String> lastName
+    ) {
+        GenericSpecification<Employee> genericSpecification = new GenericSpecification();
+
+        if(email.isPresent()) {
+            genericSpecification.add(new SearchCriteria("email", email.get(), SearchOperation.EQUAL));
+        }
+        if(lastName.isPresent()) {
+            genericSpecification.add(new SearchCriteria("lastName", lastName.get(), SearchOperation.EQUAL));
+        }
+        return converter.convert(employeeRepository.findAll(genericSpecification));
     }
 
 

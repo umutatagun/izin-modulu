@@ -1,6 +1,5 @@
 package com.example.demo.security;
 
-import com.example.demo.exception.InvalidTokenException;
 import com.example.demo.service.TokenService;
 import com.example.demo.service.impl.UserDetailsServiceImpl;
 import org.springframework.http.HttpHeaders;

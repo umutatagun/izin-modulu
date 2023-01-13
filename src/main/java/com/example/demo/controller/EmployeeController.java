@@ -22,8 +22,11 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
-        return new ResponseEntity(employeeService.getAllEmployees(), OK);
+    public ResponseEntity<List<EmployeeDto>> getAllEmployees(
+            @RequestParam(required = false) Optional<String> email,
+            @RequestParam(required = false) Optional<String> lastName
+    ) {
+        return new ResponseEntity(employeeService.getAllEmployees(email, lastName), OK);
     }
 
     @GetMapping("/{id}")
