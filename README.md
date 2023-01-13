@@ -10,7 +10,7 @@ Swagger: http://localhost:8080/swagger-ui/index.html
 
 ### Veritabanını docker ile kullanmak için
 ```
-docker-compose up
+docker-compose up -d
 ```
 
 ### Local MySQL ile bağlanmak için
