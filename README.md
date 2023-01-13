@@ -1,7 +1,7 @@
 # İzin Modülü
 
 Swagger: http://localhost:8080/swagger-ui/index.html
-##Projenin ve gerekli bağımlılıkların indirilmesi
+## Projenin ve gerekli bağımlılıkların indirilmesi
 ```
 * git clone https://github.com/umutatagun/izin-modulu.git
 * cd izin-modulu
@@ -30,7 +30,7 @@ mvn spring-boot:run
 
 ## Uygulamanın Kullanımı
 
-###Postman Collection'ını dahil etme
+### Postman Collection'ını dahil etme
 * izin_modulu_postman_collection.json isimli dosyayı postman'e import ediniz.
   * https://testfully.io/blog/import-from-postman/
 * Collection içersinde varolan bütün servisleri test edebilmemiz için gerekli endpointler hazır olarak gelecektir.
@@ -58,15 +58,3 @@ mvn spring-boot:run
 ### Dil ayarı için
 * Default dil ayarı Türkçedir. 
 * Postman headerlarında Accept-Language alanı en_EN olarak güncellenirse hata mesajları ingilizce olarak dönecektir.
-
-
-
-
-
-
-
-
-
-
-
-
