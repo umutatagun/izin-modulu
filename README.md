@@ -55,7 +55,7 @@ mvn spring-boot:run
 * Servis tetiklendiği zaman her yıl 30 aralıkta çalışacak cron job bir kerelik çalıştırılır ve çalışanlara izinleri verilir.
 
  
-###Dil ayarı için
+### Dil ayarı için
 * Default dil ayarı Türkçedir. 
 * Postman headerlarında Accept-Language alanı en_EN olarak güncellenirse hata mesajları ingilizce olarak dönecektir.
 
