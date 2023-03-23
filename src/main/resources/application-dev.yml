@@ -21,7 +21,7 @@ permissions:
 
 #Security
 jwt:
-  KEY: yapikredi
+  KEY: test
   ISSUER: umutatagun
   EXPIRES_ACCESS_TOKEN_MINUTE: 15
 
